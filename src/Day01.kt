@@ -1,22 +1,18 @@
 fun main() {
 
     fun part1(input: List<String>): Int {
-
-        var digits = emptyArray<String>()
+        var digits: String
         var solve = ""
         var sum = 0
 
-        for (i in input){
-            digits = arrayOf(i.filter { it.isDigit() })
-            for (d in digits){
-                solve += digits.first().first()
-                solve += digits.first().last()
-                sum += solve.toInt()
-                solve = ""
-            }
+        input.forEach { s: String ->
+            digits = s.filter { it.isDigit() }
+            solve += digits.first()
+            solve += digits.last()
+            sum += solve.toInt()
+            solve = ""
         }
-        println(sum)
-        return input.size
+        return sum
     }
 
     fun part2(input: List<String>): Int {
@@ -61,8 +57,8 @@ fun main() {
     }
 
     // test if implementation meets criteria from the description, like:
-    // val testInput = readInput("Day01_test")
-    // check(part1(testInput) == 1)
+    val testInput = readInput("Day01_1_test")
+    check(part1(testInput) == 142)
 
     val input = readInput("Day01")
     part1(input).println()
