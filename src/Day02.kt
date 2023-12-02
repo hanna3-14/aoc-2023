@@ -10,7 +10,7 @@ fun main() {
             fragments = fragments.subList(2, fragments.size)
             var isPossible = true
 
-            for (i in 0..fragments.size - 1 step 2) {
+            for (i in fragments.indices step 2) {
                 var number = fragments[i].toInt()
                 var color = fragments[i + 1]
                 if ((number > 12 && color == "red") || (number > 13 && color == "green") || (number > 14 && color == "blue")) {
@@ -32,7 +32,7 @@ fun main() {
             var fragments = cleanup.split(' ')
             fragments = fragments.subList(2, fragments.size)
             val chunks = fragments.chunked(2)
-            var map = mapOf<String, Int>()
+            val map = mutableMapOf<String, Int>()
 
             chunks.forEach { chunk ->
                 var number = chunk.first()
@@ -42,7 +42,7 @@ fun main() {
                 }
             }
 
-            var product = map.get("red")!! * map.get("green")!! * map.get("blue")!!
+            var product = map["red"]!! * map["green"]!! * map["blue"]!!
             sum += product
         }
         return sum
