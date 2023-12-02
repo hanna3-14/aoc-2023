@@ -25,16 +25,35 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        var sum = 0
+
+        input.forEach { s: String ->
+            var cleanup = s.replace("""[:;,]""".toRegex(), "")
+            var fragments = cleanup.split(' ')
+            fragments = fragments.subList(2, fragments.size)
+            val chunks = fragments.chunked(2)
+            var map = mapOf<String, Int>()
+
+            chunks.forEach { chunk ->
+                var number = chunk.first()
+                var color = chunk.last()
+                if ((!map.containsKey(color)) || (number.toInt() > map.get(color)!!)) {
+                    map += mapOf(color to number.toInt())
+                }
+            }
+
+            var product = map.get("red")!! * map.get("green")!! * map.get("blue")!!
+            sum += product
+        }
+        return sum
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day02_1_test")
     check(part1(testInput) == 8)
-    // val testInput2 = readInput("Day02_2_test")
-    // check(part2(testInput2) == 281)
+    check(part2(testInput) == 2286)
 
     val input = readInput("Day02")
     part1(input).println()
-    // part2(input).println()
+    part2(input).println()
 }
