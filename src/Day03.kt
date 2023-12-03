@@ -1,11 +1,16 @@
 fun main() {
 
+    /***
+     * part1:
+     * sum up any number that is adjacent, even diagonally, to a symbol (other than .)
+     */
     fun part1(input: List<String>): Int {
         var sum = 0
-        val totalNumbersRoundSymbols = mutableListOf<Int>()
-        var symbolsPerRow: MutableList<Int>
-        val symbols = mutableListOf<MutableList<Int>>()
+        val totalNumbersRoundSymbols = mutableListOf<Int>() // list of all the numbers adjacent to any symbol
+        var symbolsPerRow: MutableList<Int> // positions of symbols within a single row
+        val symbols = mutableListOf<MutableList<Int>>() // positions of symbols for any row
 
+        // find the positions of the symbols
         input.forEach { s: String ->
             symbolsPerRow = Regex("""[^0-9.]""").findAll(s).map { it.range.first }.toMutableList()
             symbols.add(symbolsPerRow)
@@ -26,10 +31,15 @@ fun main() {
         return sum
     }
 
+    /***
+     * part2:
+     * find any asterisk that has 2 adjacent numbers
+     * multiply the values of these two numbers
+     * the solution is the sum of all these products
+     */
     fun part2(input: List<String>): Int {
         var sum = 0
         val totalNumbersRoundSymbols = mutableListOf<Int>()
-        val products = mutableListOf<Int>()
 
         var asterisksPerRow: MutableList<Int>
         val asterisks = mutableListOf<MutableList<Int>>()
@@ -40,22 +50,15 @@ fun main() {
         }
 
         asterisks.forEachIndexed { row, _ ->
-            var product: Int
             if (asterisks[row] != emptyList<Int>()) {
-
                 asterisks[row].forEach { column: Int ->
-                    var numbersRoundSpecificSymbol = findNumber(input, row, column)
+                    val numbersRoundSpecificSymbol = findNumber(input, row, column)
                     numbersRoundSpecificSymbol.forEach { totalNumbersRoundSymbols.add(it) }
                     if (numbersRoundSpecificSymbol.size == 2) {
-                        product = numbersRoundSpecificSymbol[0] * numbersRoundSpecificSymbol[1]
-                        products.add(product)
+                        sum += numbersRoundSpecificSymbol[0] * numbersRoundSpecificSymbol[1]
                     }
                 }
             }
-        }
-
-        products.forEach { p: Int ->
-            sum += p
         }
         return sum
     }

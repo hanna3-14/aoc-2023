@@ -1,20 +1,31 @@
 fun main() {
 
+    /***
+     * part1:
+     * for each line, combine the first digit and the last digit to form a single two-digit number
+     * the sum of all these two-digit numbers is the solution
+     */
     fun part1(input: List<String>): Int {
         var digits: String
         var solve = ""
         var sum = 0
 
-        input.forEach { s: String ->
-            digits = s.filter { it.isDigit() }
-            solve += digits.first()
+        input.forEach { s: String -> // for each row of the input
+            digits = s.filter { it.isDigit() } // remove all characters
+            solve += digits.first() // concatenate the first and the last digit to a string
             solve += digits.last()
-            sum += solve.toInt()
+            sum += solve.toInt() // build the sum of all two-digit numbers
             solve = ""
         }
         return sum
     }
 
+    /***
+     * part2:
+     * for each line, combine the first digit and the last digit to form a single two-digit number
+     * the sum of all these two-digit numbers is the solution
+     * some of the digits are spelled out
+     */
     fun part2(input: List<String>): Int {
         var solve = ""
         var sum = 0
@@ -42,8 +53,8 @@ fun main() {
         var lastDigit: Pair<Int, String>
 
         input.forEach { s: String ->
-            firstDigit = s.findAnyOf(numbers)!!
-            lastDigit = s.findLastAnyOf(numbers)!!
+            firstDigit = s.findAnyOf(numbers)!! // find the first occurrence of any number
+            lastDigit = s.findLastAnyOf(numbers)!! // find the last occurrence of any number
             solve += valueOfString(firstDigit.second)
             solve += valueOfString(lastDigit.second)
             sum += solve.toInt()
@@ -67,6 +78,7 @@ fun main() {
     check(part2(input) == 55614)
 }
 
+// converts each number string to the corresponding integer
 fun valueOfString(string: String): Int {
     return when (string) {
         "one" -> 1
