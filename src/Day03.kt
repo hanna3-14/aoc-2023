@@ -28,12 +28,48 @@ fun main() {
         return sum
     }
 
+    fun part2(input: List<String>): Int {
+        var sum = 0
+        var numbers = mutableListOf<Int>()
+        var products = mutableListOf<Int>()
+
+        var asterisksPerRow: MutableList<Int>
+        val asteriks = mutableListOf<MutableList<Int>>()
+
+        input.forEach { s: String ->
+            asterisksPerRow = Regex("""[*]""").findAll(s).map { it.range.first }.toMutableList()
+            asteriks.add(asterisksPerRow)
+        }
+
+        for (row in asteriks.indices) {
+            var product = 0
+            if (asteriks[row] != emptyList<Int>()) {
+
+                asteriks[row].forEach { column: Int ->
+                    var lel = findNumber(input, row, column)
+                    lel.forEach { numbers.add(it) }
+                    if (lel.size == 2) {
+                        product = lel[0] * lel[1]
+                        products.add(product)
+                    }
+                }
+            }
+        }
+        products.forEach { p: Int ->
+            sum += p
+        }
+
+        return sum
+    }
+
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day03_1_test")
     check(part1(testInput) == 4361)
+    check(part2(testInput) == 467835)
 
     val input = readInput("Day03")
     part1(input).println()
+    part2(input).println()
 }
 
 fun findNumber(
