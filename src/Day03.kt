@@ -19,7 +19,7 @@ fun main() {
         symbols.forEachIndexed { row, _ ->
             if (symbols[row] != emptyList<Int>()) {
                 symbols[row].forEach { column: Int ->
-                    val numbersRoundSpecificSymbol = findNumber(input, row, column)
+                    val numbersRoundSpecificSymbol = findNumbersRoundSymbol(input, row, column)
                     numbersRoundSpecificSymbol.forEach { totalNumbersRoundSymbols.add(it) }
                 }
             }
@@ -52,7 +52,7 @@ fun main() {
         asterisks.forEachIndexed { row, _ ->
             if (asterisks[row] != emptyList<Int>()) {
                 asterisks[row].forEach { column: Int ->
-                    val numbersRoundSpecificSymbol = findNumber(input, row, column)
+                    val numbersRoundSpecificSymbol = findNumbersRoundSymbol(input, row, column)
                     numbersRoundSpecificSymbol.forEach { totalNumbersRoundSymbols.add(it) }
                     if (numbersRoundSpecificSymbol.size == 2) {
                         sum += numbersRoundSpecificSymbol[0] * numbersRoundSpecificSymbol[1]
@@ -77,71 +77,44 @@ fun main() {
     check(part2(input) == 84159075)
 }
 
-// finds the value of a number which is adjacent to a symbol
-fun findNumber(
-    input: List<String>, row: Int, column: Int
-): MutableList<Int> {
-    val numbers = mutableListOf<Int>()
-    if (input[row - 1][column].isDigit()) {  // if number is directly above the symbol
-        var start = column
-        while (input[row - 1][start].isDigit()) {
-            start -= 1
-        }
-        start += 1
-        var end = column
-        while (input[row - 1][end].isDigit()) {
-            end += 1
-        }
-        end -= 1
-        var number = ""
-        for (i in start..end) {
-            number += input[row - 1][i]
-        }
-        numbers.add(number.toInt())
+// finds all the numbers that are adjacent to a symbol
+fun findNumbersRoundSymbol(input: List<String>, row: Int, column: Int): MutableList<Int> {
+    val numbers = mutableListOf<Int>() // contains all numbers adjacent to the symbol
+
+    if (input[row - 1][column].isDigit()) { // if number is directly above the symbol
+        numbers.add(findNumberAtPosition(input, row - 1, column))
     } else {
         if (input[row - 1][column - 1].isDigit()) { // number is above on the left side
-            var start = column - 1
-            while (input[row - 1][start].isDigit()) {
-                start -= 1
-                if (start == -1) {
-                    break
-                }
-            }
-            start += 1
-            var end = column - 1
-            while (input[row - 1][end].isDigit()) {
-                end += 1
-            }
-            end -= 1
-            var number = ""
-            for (i in start..end) {
-                number += input[row - 1][i]
-            }
-            numbers.add(number.toInt())
+            numbers.add(findNumberAtPosition(input, row - 1, column - 1))
         }
         if (input[row - 1][column + 1].isDigit()) { // number is above on the right side
-            var start = column + 1
-            while (input[row - 1][start].isDigit()) {
-                start -= 1
-            }
-            start += 1
-            var end = column + 1
-            while (input[row - 1][end].isDigit()) {
-                end += 1
-                if (end == input.size + 1) {
-                    break
-                }
-            }
-            end -= 1
-            var number = ""
-            for (i in start..end) {
-                number += input[row - 1][i]
-            }
-            numbers.add(number.toInt())
+            numbers.add(findNumberAtPosition(input, row - 1, column + 1))
         }
     }
     if (input[row][column - 1].isDigit()) { // number is in the same row on the left
-        var start = column - 1
+        numbers.add(findNumberAtPosition(input, row, column - 1))
+    }
+    if (input[row][column + 1].isDigit()) { // number is in the same row on the right
+        numbers.add(findNumberAtPosition(input, row, column + 1))
+    }
+    if (input[row + 1][column].isDigit()) { // if number is directly below the symbol
+        numbers.add(findNumberAtPosition(input, row + 1, column))
+    } else {
+        if (input[row + 1][column - 1].isDigit()) { // number is below on the left side
+            numbers.add(findNumberAtPosition(input, row + 1, column - 1))
+        }
+        if (input[row + 1][column + 1].isDigit()) { // number is below on the right side
+            numbers.add(findNumberAtPosition(input, row + 1, column + 1))
+        }
+    }
+    return numbers
+}
+
+// find a number at specific position adjacent to the symbol
+fun findNumberAtPosition(input: List<String>, row: Int, column: Int): Int {
+    var number = ""
+    if (input[row][column].isDigit()) {
+        var start = column
         while (input[row][start].isDigit()) {
             start -= 1
             if (start == -1) {
@@ -149,16 +122,7 @@ fun findNumber(
             }
         }
         start += 1
-        var end = column - 1
-        var number = ""
-        for (i in start..end) {
-            number += input[row][i]
-        }
-        numbers.add(number.toInt())
-    }
-    if (input[row][column + 1].isDigit()) { // number is in the same row on the right
-        var start = column + 1
-        var end = column + 1
+        var end = column
         while (input[row][end].isDigit()) {
             end += 1
             if (end == input.size) {
@@ -166,69 +130,9 @@ fun findNumber(
             }
         }
         end -= 1
-        var number = ""
         for (i in start..end) {
             number += input[row][i]
         }
-        numbers.add(number.toInt())
     }
-    if (input[row + 1][column].isDigit()) { // if number is directly below the symbol
-        var start = column
-        while (input[row + 1][start].isDigit()) {
-            start -= 1
-        }
-        start += 1
-        var end = column
-        while (input[row + 1][end].isDigit()) {
-            end += 1
-        }
-        end -= 1
-        var number = ""
-        for (i in start..end) {
-            number += input[row + 1][i]
-        }
-        numbers.add(number.toInt())
-    } else {
-        if (input[row + 1][column - 1].isDigit()) { // number is below on the left side
-            var start = column - 1
-            while (input[row + 1][start].isDigit()) {
-                start -= 1
-                if (start == -1) {
-                    break
-                }
-            }
-            start += 1
-            var end = column - 1
-            while (input[row + 1][end].isDigit()) {
-                end += 1
-            }
-            end -= 1
-            var number = ""
-            for (i in start..end) {
-                number += input[row + 1][i]
-            }
-            numbers.add(number.toInt())
-        }
-        if (input[row + 1][column + 1].isDigit()) { // number is below on the right side
-            var start = column + 1
-            while (input[row + 1][start].isDigit()) {
-                start -= 1
-            }
-            start += 1
-            var end = column + 1
-            while (input[row + 1][end].isDigit()) {
-                end += 1
-                if (end == input.size) {
-                    break
-                }
-            }
-            end -= 1
-            var number = ""
-            for (i in start..end) {
-                number += input[row + 1][i]
-            }
-            numbers.add(number.toInt())
-        }
-    }
-    return numbers
+    return number.toInt()
 }
