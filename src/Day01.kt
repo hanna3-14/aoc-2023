@@ -18,7 +18,26 @@ fun main() {
     fun part2(input: List<String>): Int {
         var solve = ""
         var sum = 0
-        var numbers = listOf("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+        val numbers = listOf(
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        )
         var firstDigit: Pair<Int, String>
         var lastDigit: Pair<Int, String>
 
@@ -42,6 +61,10 @@ fun main() {
     val input = readInput("Day01")
     part1(input).println()
     part2(input).println()
+
+    // check after submitting the solution
+    check(part1(input) == 55488)
+    check(part2(input) == 55614)
 }
 
 fun valueOfString(string: String): Int {

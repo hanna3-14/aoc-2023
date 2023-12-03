@@ -2,8 +2,7 @@ fun main() {
 
     fun part1(input: List<String>): Int {
         var sum = 0
-        var numbers = mutableListOf<Int>()
-
+        val totalNumbersRoundSymbols = mutableListOf<Int>()
         var symbolsPerRow: MutableList<Int>
         val symbols = mutableListOf<MutableList<Int>>()
 
@@ -12,53 +11,52 @@ fun main() {
             symbols.add(symbolsPerRow)
         }
 
-        for (row in symbols.indices) {
+        symbols.forEachIndexed { row, _ ->
             if (symbols[row] != emptyList<Int>()) {
                 symbols[row].forEach { column: Int ->
-                    var lel = findNumber(input, row, column)
-                    lel.forEach { numbers.add(it) }
+                    val numbersRoundSpecificSymbol = findNumber(input, row, column)
+                    numbersRoundSpecificSymbol.forEach { totalNumbersRoundSymbols.add(it) }
                 }
             }
         }
 
-        numbers.forEach { number: Int ->
+        totalNumbersRoundSymbols.forEach { number: Int ->
             sum += number
         }
-
         return sum
     }
 
     fun part2(input: List<String>): Int {
         var sum = 0
-        var numbers = mutableListOf<Int>()
-        var products = mutableListOf<Int>()
+        val totalNumbersRoundSymbols = mutableListOf<Int>()
+        val products = mutableListOf<Int>()
 
         var asterisksPerRow: MutableList<Int>
-        val asteriks = mutableListOf<MutableList<Int>>()
+        val asterisks = mutableListOf<MutableList<Int>>()
 
         input.forEach { s: String ->
             asterisksPerRow = Regex("""[*]""").findAll(s).map { it.range.first }.toMutableList()
-            asteriks.add(asterisksPerRow)
+            asterisks.add(asterisksPerRow)
         }
 
-        for (row in asteriks.indices) {
-            var product = 0
-            if (asteriks[row] != emptyList<Int>()) {
+        asterisks.forEachIndexed { row, _ ->
+            var product: Int
+            if (asterisks[row] != emptyList<Int>()) {
 
-                asteriks[row].forEach { column: Int ->
-                    var lel = findNumber(input, row, column)
-                    lel.forEach { numbers.add(it) }
-                    if (lel.size == 2) {
-                        product = lel[0] * lel[1]
+                asterisks[row].forEach { column: Int ->
+                    var numbersRoundSpecificSymbol = findNumber(input, row, column)
+                    numbersRoundSpecificSymbol.forEach { totalNumbersRoundSymbols.add(it) }
+                    if (numbersRoundSpecificSymbol.size == 2) {
+                        product = numbersRoundSpecificSymbol[0] * numbersRoundSpecificSymbol[1]
                         products.add(product)
                     }
                 }
             }
         }
+
         products.forEach { p: Int ->
             sum += p
         }
-
         return sum
     }
 
@@ -70,12 +68,17 @@ fun main() {
     val input = readInput("Day03")
     part1(input).println()
     part2(input).println()
+
+    // check after submitting the solution
+    check(part1(input) == 539713)
+    check(part2(input) == 84159075)
 }
 
+// finds the value of a number which is adjacent to a symbol
 fun findNumber(
     input: List<String>, row: Int, column: Int
 ): MutableList<Int> {
-    var numbers = mutableListOf<Int>()
+    val numbers = mutableListOf<Int>()
     if (input[row - 1][column].isDigit()) {  // if number is directly above the symbol
         var start = column
         while (input[row - 1][start].isDigit()) {
