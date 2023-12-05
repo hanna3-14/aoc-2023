@@ -7,7 +7,6 @@ fun main() {
         seeds.forEach { seed: String ->
             seedsInt.add(seed.toLong())
         }
-        // println(seeds)
         // var maps = input.subList(2, input.size).filter { it.isNotBlank() }
         var indexes = mutableListOf<Int>()
         input.forEachIndexed { index: Int, s: String ->
@@ -25,39 +24,32 @@ fun main() {
 
         var soils = mutableListOf<Long>()
         seedsInt.forEach { seed: Long ->
-            soils.add(doImportantStuff(seedToSoil, seed)!!)
+            soils.add(doImportantStuff(seedToSoil, seed))
         }
-        // println(soils)
         var fertilizers = mutableListOf<Long>()
         soils.forEach { soil: Long ->
-            fertilizers.add(doImportantStuff(soilToFertilizer, soil)!!)
+            fertilizers.add(doImportantStuff(soilToFertilizer, soil))
         }
-        //println(fertilizers)
         var waters = mutableListOf<Long>()
         fertilizers.forEach { fertilizer: Long ->
-            waters.add(doImportantStuff(fertilizerToWater, fertilizer)!!)
+            waters.add(doImportantStuff(fertilizerToWater, fertilizer))
         }
-        //println(waters)
         var lights = mutableListOf<Long>()
         waters.forEach { water: Long ->
-            lights.add(doImportantStuff(waterToLight, water)!!)
+            lights.add(doImportantStuff(waterToLight, water))
         }
-        //println(lights)
         var temperatures = mutableListOf<Long>()
         lights.forEach { light: Long ->
-            temperatures.add(doImportantStuff(lightToTemperature, light)!!)
+            temperatures.add(doImportantStuff(lightToTemperature, light))
         }
-        //println(temperatures)
         var humidities = mutableListOf<Long>()
         temperatures.forEach { temperature: Long ->
-            humidities.add(doImportantStuff(temperatureToHumidity, temperature)!!)
+            humidities.add(doImportantStuff(temperatureToHumidity, temperature))
         }
-        //println(humidities)
         var locations = mutableListOf<Long>()
         humidities.forEach { humidity: Long ->
-            locations.add(doImportantStuff(humidityToLocation, humidity)!!)
+            locations.add(doImportantStuff(humidityToLocation, humidity))
         }
-        //println(locations)
         return locations.min()
     }
 
@@ -75,12 +67,11 @@ fun main() {
     part2(input).println()
 
     // check after submitting the solution
-    // check(part1(input) == 23441)
+    check(part1(input) == 486613012.toLong())
     // check(part2(input) == 5923918)
 }
 
-fun doImportantStuff(transformationList: List<String>, seed: Long): Long? {
-    var transformationMap = mutableMapOf<Long, Long>()
+fun doImportantStuff(transformationList: List<String>, seed: Long): Long {
     var destinations = mutableListOf<Long>()
     var sources = mutableListOf<Long>()
     var lengths = mutableListOf<Long>()
@@ -93,15 +84,13 @@ fun doImportantStuff(transformationList: List<String>, seed: Long): Long? {
         var length = numbers[2].toLong()
         lengths.add(length)
     }
-    destinations.forEachIndexed { index: Int, _ ->
-        for (i in 0..<lengths[index]) {
-            transformationMap += mapOf(sources[index] + i to (destinations[index] + i))
+    var mutableSeed = seed
+    for (index in sources.indices) {
+        var offset = destinations[index] - sources[index]
+        if ((sources[index] <= mutableSeed) && (mutableSeed <= sources[index] + lengths[index])) {
+            mutableSeed += offset
+            break
         }
     }
-    // println(transformationMap)
-    return if (transformationMap[seed] != null) {
-        transformationMap[seed]
-    } else {
-        seed
-    }
+    return mutableSeed
 }
