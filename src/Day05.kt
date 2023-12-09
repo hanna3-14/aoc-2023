@@ -3,7 +3,7 @@ fun main() {
     fun part1(input: List<String>): Long {
         var seeds = input[0].split(' ')
         seeds = seeds.subList(1, seeds.size)
-        var seedsInt = mutableListOf<Long>()
+        val seedsInt = mutableListOf<Long>()
         seeds.forEach { seed: String ->
             seedsInt.add(seed.toLong())
         }
@@ -14,39 +14,39 @@ fun main() {
                 indexes += index + 1
             }
         }
-        var seedToSoil = input.subList(indexes[0], indexes[1] - 2)
-        var soilToFertilizer = input.subList(indexes[1], indexes[2] - 2)
-        var fertilizerToWater = input.subList(indexes[2], indexes[3] - 2)
-        var waterToLight = input.subList(indexes[3], indexes[4] - 2)
-        var lightToTemperature = input.subList(indexes[4], indexes[5] - 2)
-        var temperatureToHumidity = input.subList(indexes[5], indexes[6] - 2)
-        var humidityToLocation = input.subList(indexes[6], input.size)
+        val seedToSoil = input.subList(indexes[0], indexes[1] - 2)
+        val soilToFertilizer = input.subList(indexes[1], indexes[2] - 2)
+        val fertilizerToWater = input.subList(indexes[2], indexes[3] - 2)
+        val waterToLight = input.subList(indexes[3], indexes[4] - 2)
+        val lightToTemperature = input.subList(indexes[4], indexes[5] - 2)
+        val temperatureToHumidity = input.subList(indexes[5], indexes[6] - 2)
+        val humidityToLocation = input.subList(indexes[6], input.size)
 
-        var soils = mutableListOf<Long>()
+        val soils = mutableListOf<Long>()
         seedsInt.forEach { seed: Long ->
             soils.add(doImportantStuff(seedToSoil, seed))
         }
-        var fertilizers = mutableListOf<Long>()
+        val fertilizers = mutableListOf<Long>()
         soils.forEach { soil: Long ->
             fertilizers.add(doImportantStuff(soilToFertilizer, soil))
         }
-        var waters = mutableListOf<Long>()
+        val waters = mutableListOf<Long>()
         fertilizers.forEach { fertilizer: Long ->
             waters.add(doImportantStuff(fertilizerToWater, fertilizer))
         }
-        var lights = mutableListOf<Long>()
+        val lights = mutableListOf<Long>()
         waters.forEach { water: Long ->
             lights.add(doImportantStuff(waterToLight, water))
         }
-        var temperatures = mutableListOf<Long>()
+        val temperatures = mutableListOf<Long>()
         lights.forEach { light: Long ->
             temperatures.add(doImportantStuff(lightToTemperature, light))
         }
-        var humidities = mutableListOf<Long>()
+        val humidities = mutableListOf<Long>()
         temperatures.forEach { temperature: Long ->
             humidities.add(doImportantStuff(temperatureToHumidity, temperature))
         }
-        var locations = mutableListOf<Long>()
+        val locations = mutableListOf<Long>()
         humidities.forEach { humidity: Long ->
             locations.add(doImportantStuff(humidityToLocation, humidity))
         }
@@ -57,55 +57,41 @@ fun main() {
         var location = 5000000000
         var seeds = input[0].split(' ')
         seeds = seeds.subList(1, seeds.size)
-        var seedsInt = mutableListOf<Long>()
+        val seedsInt = mutableListOf<Long>()
         seeds.forEach { seed: String ->
             seedsInt.add(seed.toLong())
         }
-        var seedChunks = seedsInt.chunked(2)
-        var indexes = mutableListOf<Int>()
+        val seedChunks = seedsInt.chunked(2)
+        val indexes = mutableListOf<Int>()
         input.forEachIndexed { index: Int, s: String ->
             if (s.contains("map")) {
                 indexes += index + 1
             }
         }
-        var seedToSoil = input.subList(indexes[0], indexes[1] - 2)
-        var soilToFertilizer = input.subList(indexes[1], indexes[2] - 2)
-        var fertilizerToWater = input.subList(indexes[2], indexes[3] - 2)
-        var waterToLight = input.subList(indexes[3], indexes[4] - 2)
-        var lightToTemperature = input.subList(indexes[4], indexes[5] - 2)
-        var temperatureToHumidity = input.subList(indexes[5], indexes[6] - 2)
-        var humidityToLocation = input.subList(indexes[6], input.size)
+        val seedToSoil = input.subList(indexes[0], indexes[1] - 2)
+        val soilToFertilizer = input.subList(indexes[1], indexes[2] - 2)
+        val fertilizerToWater = input.subList(indexes[2], indexes[3] - 2)
+        val waterToLight = input.subList(indexes[3], indexes[4] - 2)
+        val lightToTemperature = input.subList(indexes[4], indexes[5] - 2)
+        val temperatureToHumidity = input.subList(indexes[5], indexes[6] - 2)
+        val humidityToLocation = input.subList(indexes[6], input.size)
 
-        var soil = 0.toLong()
+        var soil: Long
         for (chunk in seedChunks) {
-            for (i in chunk.first()..<chunk.first() + chunk.last()) {
-                var seed = i
+            for (seed in chunk.first()..<chunk.first() + chunk.last()) {
                 soil = doImportantStuff(seedToSoil, seed)
-                var fertilizer = 0.toLong()
-                fertilizer = doImportantStuff(soilToFertilizer, soil)
-
-                var water = 0.toLong()
-                water = doImportantStuff(fertilizerToWater, fertilizer)
-
-                var light = 0.toLong()
-                light = doImportantStuff(waterToLight, water)
-
-                var temperature = 0.toLong()
-                temperature = doImportantStuff(lightToTemperature, light)
-
-                var humidity = 0.toLong()
-                humidity = doImportantStuff(temperatureToHumidity, temperature)
-
-                var result = 0.toLong()
-
-                result = doImportantStuff(humidityToLocation, humidity)
-
+                val fertilizer = doImportantStuff(soilToFertilizer, soil)
+                val water = doImportantStuff(fertilizerToWater, fertilizer)
+                val light = doImportantStuff(waterToLight, water)
+                val temperature = doImportantStuff(lightToTemperature, light)
+                val humidity = doImportantStuff(temperatureToHumidity, temperature)
+                val result = doImportantStuff(humidityToLocation, humidity)
                 if (result < location) {
                     location = result
                 }
                 println(location)
             }
-            println(location)
+            //println(location)
         }
         return location
     }
@@ -125,23 +111,11 @@ fun main() {
 }
 
 fun doImportantStuff(transformationList: List<String>, seed: Long): Long {
-    var destinations = mutableListOf<Long>()
-    var sources = mutableListOf<Long>()
-    var lengths = mutableListOf<Long>()
-    transformationList.forEach { s: String ->
-        var numbers = s.split(' ')
-        var destination = numbers[0].toLong()
-        destinations.add(destination)
-        var source = numbers[1].toLong()
-        sources.add(source)
-        var length = numbers[2].toLong()
-        lengths.add(length)
-    }
     var mutableSeed = seed
-    for (index in sources.indices) {
-        var offset = destinations[index] - sources[index]
-        if ((sources[index] <= mutableSeed) && (mutableSeed <= sources[index] + lengths[index])) {
-            mutableSeed += offset
+    for (i in transformationList.indices) {
+        val chunks = transformationList[i].split(' ')
+        if ((chunks[1].toLong() <= mutableSeed) && (chunks[1].toLong() + chunks[2].toLong() >= mutableSeed)) {
+            mutableSeed += chunks[0].toLong() - chunks[1].toLong()
             break
         }
     }
