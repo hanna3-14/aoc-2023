@@ -10,8 +10,8 @@ fun main() {
                 // Custom logic for comparing letters
                 val order = mapOf(
                     'A' to 14,
-                    'Q' to 13,
-                    'K' to 12,
+                    'K' to 13,
+                    'Q' to 12,
                     'J' to 11,
                     'T' to 10,
                     '9' to 9,
@@ -60,14 +60,6 @@ fun main() {
             }
         }
 
-        println(highCards)
-        println(onePairs)
-        println(twoPairs)
-        println(threes)
-        println(fullhouses)
-        println(fours)
-        println(fives)
-
         val highCardsSorted = highCards.sortedWith(customComparator).reversed()
         val onePairsSorted = onePairs.sortedWith(customComparator).reversed()
         val twoPairsSorted = twoPairs.sortedWith(customComparator).reversed()
@@ -75,14 +67,6 @@ fun main() {
         val fullhousesSorted = fullhouses.sortedWith(customComparator).reversed()
         val foursSorted = fours.sortedWith(customComparator).reversed()
         val fivesSorted = fives.sortedWith(customComparator).reversed()
-
-        println(highCardsSorted)
-        println(onePairsSorted)
-        println(twoPairsSorted)
-        println(threesSorted)
-        println(fullhousesSorted)
-        println(foursSorted)
-        println(fivesSorted)
 
         highCardsSorted.forEach { s: String ->
             completelySortedList.add(s.split(' ').last().toInt())
@@ -106,11 +90,8 @@ fun main() {
             completelySortedList.add(s.split(' ').last().toInt())
         }
 
-        println(completelySortedList)
-
         completelySortedList.forEachIndexed { index, number ->
             sum += (index + 1) * number
-            // println("index: ${index + 1}, number: $number")
         }
 
         return sum
@@ -126,14 +107,11 @@ fun main() {
     // check(part2(testInput) == 71503)
 
     val input = readInput("Day07")
-    // part1(input).println()
-
-    // 251.142.166 too high
-    // 249.858.334 too low
+    part1(input).println()
     // part2(input).println()
 
     // check after submitting the solution
-    // check(part1(input) == 32076)
+    check(part1(input) == 250898830)
     // check(part2(input) == 34278221)
 }
 
