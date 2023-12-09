@@ -2,7 +2,7 @@ fun main() {
 
     fun part1(input: List<String>): Int {
         var totalSteps = 0
-        val instructions = input.first().toCharArray()
+        val instructions = input.first()
 
         var navigations = input.subList(2, input.size).toMutableList()
         for (i in navigations.indices) {
@@ -23,7 +23,7 @@ fun main() {
                 start = currentNavigation[11].toString() + currentNavigation[12] + currentNavigation[13]
             }
             index += 1
-            if (index == instructions.size) {
+            if (index == instructions.length) {
                 index = 0
             }
         }
@@ -31,7 +31,53 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        var totalSteps = 0
+        val instructions = input.first()
+        println(instructions)
+        var lel = mutableListOf<MutableList<Char>>()
+        input.subList(2, input.size).forEach { line: String ->
+            lel.add(line.toMutableList())
+        }
+        // println(lel)
+        var navigations = mutableListOf<MutableList<String>>()
+        for (i in lel.indices) {
+            navigations.add(
+                mutableListOf(
+                    lel[i][0].toString() + lel[i][1] + lel[i][2],
+                    lel[i][7].toString() + lel[i][8] + lel[i][9],
+                    lel[i][12].toString() + lel[i][13] + lel[i][14]
+                )
+            )
+        }
+
+        val sources = mutableListOf<String>()
+        navigations.forEach { sources.add(it.first()) }
+        val starts = sources.filter { it[2] == 'A' }.toMutableList()
+
+        var index = 0
+        var requirement = true
+        while (requirement) {
+            requirement = false
+            totalSteps += 1
+            for (i in starts.indices) {
+                var currentNavigation = navigations.first { it.first() == starts[i] }
+                if (instructions[index] == 'L') {
+                    starts[i] = currentNavigation[1]
+                } else {
+                    starts[i] = currentNavigation[2]
+                }
+                if (starts[i][2] != 'Z') {
+                    requirement = true
+                }
+            }
+            index += 1
+            if (index == instructions.length) {
+                index = 0
+            }
+            println(totalSteps)
+        }
+        println(totalSteps)
+        return totalSteps
     }
 
     // test if implementation meets criteria from the description, like:
@@ -39,10 +85,11 @@ fun main() {
     val testInput2 = readInput("Day08_2_test")
     check(part1(testInput) == 2)
     check(part1(testInput2) == 6)
-    // check(part2(testInput) == 30)
+    val testInput3 = readInput("Day08_3_test")
+    check(part2(testInput3) == 6)
 
     val input = readInput("Day08")
-    part1(input).println()
+    // part1(input).println()
     // part2(input).println()
 
     // check after submitting the solution
