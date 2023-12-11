@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 fun main() {
 
     fun part1(input: List<String>): Int {
@@ -57,8 +59,22 @@ fun main() {
             newGalaxies.clear()
             offset += 1
         }
-        println("galaxies: $galaxies")
-        return input.size
+
+        // calculate shorted paths between all galaxies
+        var totalDistance = 0
+        var counter = 0
+        for (i in galaxies.size - 1 downTo 0) {
+            for (j in galaxies.size - 2 downTo 0) {
+                var distance = 0
+                distance += abs(galaxies[j].first - galaxies[i].first)
+                distance += abs(galaxies[j].second - galaxies[i].second)
+                counter += 1
+                totalDistance += distance
+            }
+            galaxies.remove(galaxies[i])
+        }
+
+        return totalDistance
     }
 
     fun part2(input: List<String>): Int {
@@ -72,9 +88,9 @@ fun main() {
 
     val input = readInput("Day11")
     part1(input).println()
-    part2(input).println()
+    // part2(input).println()
 
     // check after submitting the solution
-    //check(part1(input) == 1647269739)
+    check(part1(input) == 9550717)
     // check(part2(input) == 864)
 }
