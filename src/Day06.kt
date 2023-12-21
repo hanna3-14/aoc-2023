@@ -1,15 +1,22 @@
 fun main() {
 
+    /***
+     * part1:
+     * each race has a time limit
+     * how many possibilities are there to beat the record?
+     * solution: multiply this number for all races
+     */
     fun part1(input: List<String>): Int {
         var total = 1
-        var times = input[0].split(' ')
+        var times = input.first().split(' ')
         times = times.subList(1, times.size).filter { it != "" }
-        var distances = input[1].split(' ')
+        var distances = input.last().split(' ')
         distances = distances.subList(1, distances.size).filter { it != "" }
+
         for (i in times.indices) {
             var wins = 0
             for (buttonTime in 0..times[i].toInt()) {
-                var distance = (times[i].toInt() - buttonTime) * buttonTime
+                val distance = (times[i].toInt() - buttonTime) * buttonTime
                 if (distance > distances[i].toInt()) {
                     wins += 1
                 }
@@ -19,28 +26,30 @@ fun main() {
         return total
     }
 
+    /***
+     * part2:
+     * actually it is only one large race
+     */
     fun part2(input: List<String>): Int {
-        var total = 1
-        var times = input[0].split(' ')
+        var times = input.first().split(' ')
         times = times.subList(1, times.size).filter { it != "" }
         var totalTime = ""
         times.forEach { totalTime += it }
-        var totalTimeLong = totalTime.toLong()
-        var distances = input[1].split(' ')
+        val totalTimeLong = totalTime.toLong()
+        var distances = input.last().split(' ')
         distances = distances.subList(1, distances.size).filter { it != "" }
         var totalDistance = ""
         distances.forEach { totalDistance += it }
-        var totalDistanceLong = totalDistance.toLong()
+        val totalDistanceLong = totalDistance.toLong()
 
         var wins = 0
         for (buttonTime in 0..totalTimeLong) {
-            var distance = (totalTimeLong - buttonTime) * buttonTime
+            val distance = (totalTimeLong - buttonTime) * buttonTime
             if (distance > totalDistanceLong) {
                 wins += 1
             }
         }
-        total *= wins
-        return total
+        return wins
     }
 
     // test if implementation meets criteria from the description, like:
