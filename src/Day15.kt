@@ -1,5 +1,14 @@
 fun main() {
 
+    /***
+     * part1:
+     * implement the following hash algorithm:
+     * 1. determine the ASCII code for the current character of the string.
+     * 2. increase the current value by the ASCII code you just determined.
+     * 3. set the current value to itself multiplied by 17.
+     * 4. set the current value to the remainder of dividing itself by 256.
+     * solution: the sum of all hash values
+     */
     fun part1(input: List<String>): Int {
         var totalsum = 0
         val strings = input.first().split(',')
@@ -15,6 +24,10 @@ fun main() {
         return totalsum
     }
 
+    /***
+     * part2:
+     * implement another hash algorithm that I am too lazy to describe here
+     */
     fun part2(input: List<String>): Int {
         val boxes = MutableList(256) { _ -> (mutableListOf<String>()) }
         val strings = input.first().split(',')

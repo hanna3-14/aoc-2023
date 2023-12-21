@@ -2,8 +2,15 @@ import kotlin.math.abs
 
 fun main() {
 
+    /***
+     * part1:
+     * the input consists of empty space (.) and galaxies (#)
+     * 1. expand the universe (for each row / column that is empty, another empty row / column is added)
+     * 2. calculate the shorted paths between every pair of galaxies
+     * solution: the sum of all distances between the pairs of galaxies
+     */
     fun part1(input: List<String>): Int {
-
+        // find the positions of each galaxy before the expansion of the universe
         val galaxies = mutableListOf<Pair<Int, Int>>()
         input.forEachIndexed { index, s ->
             if (s.contains('#')) {
@@ -11,6 +18,9 @@ fun main() {
                 indices.forEach { galaxies.add(Pair(index, it)) }
             }
         }
+
+        // find the positions of each galaxy after the expansion of the universe
+        val newGalaxies = mutableListOf<Pair<Int, Int>>()
 
         // expand space from top to bottom
         val emptyLines = mutableListOf<Int>()
@@ -20,8 +30,6 @@ fun main() {
                 emptyLines.add(i)
             }
         }
-
-        val newGalaxies = mutableListOf<Pair<Int, Int>>()
 
         var offset = 0
         for (line in emptyLines) {
@@ -78,8 +86,9 @@ fun main() {
     fun part2(input: List<String>, expansion: Int): Long {
 
         // calculate the correct expansion value
-        var exp = expansion - 1
+        val exp = expansion - 1
 
+        // find the positions of each galaxy before the expansion of the universe
         val galaxies = mutableListOf<Pair<Long, Long>>()
         input.forEachIndexed { index, s ->
             if (s.contains('#')) {
@@ -87,6 +96,9 @@ fun main() {
                 indices.forEach { galaxies.add(Pair(index.toLong(), it.toLong())) }
             }
         }
+
+        // find the positions of each galaxy after the expansion of the universe
+        val newGalaxies = mutableListOf<Pair<Long, Long>>()
 
         // expand space from top to bottom
         val emptyLines = mutableListOf<Int>()
@@ -96,8 +108,6 @@ fun main() {
                 emptyLines.add(i)
             }
         }
-
-        val newGalaxies = mutableListOf<Pair<Long, Long>>()
 
         var offset = 0
         for (line in emptyLines) {
@@ -112,8 +122,6 @@ fun main() {
             newGalaxies.clear()
             offset += exp
         }
-        // 1000000
-        //println(1000000-1)
 
         // expand space from left to right
         val emptyColumns = mutableListOf<Int>()

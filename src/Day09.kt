@@ -1,14 +1,20 @@
 fun main() {
 
+    /***
+     * part1:
+     * find the next value for each row
+     */
     fun part1(input: List<String>): Int {
         var sum = 0
         input.forEach { s: String ->
-            val chunks = mutableListOf<Int>()
+            val numbers = mutableListOf<Int>() // numbers within a row
             val stringChunks = s.split(' ')
-            stringChunks.forEach { chunks.add(it.toInt()) }
+            stringChunks.forEach { numbers.add(it.toInt()) }
             val stack = mutableListOf<Int>()
-            for (i in 0..chunks.size - 2) {
-                stack.add(chunks[i + 1] - chunks[i])
+
+            // store the diagonal numbers on the stack
+            for (i in 0..numbers.size - 2) {
+                stack.add(numbers[i + 1] - numbers[i])
                 repeat(i) {
                     stack.add(stack.last() - stack[0])
                     stack.removeFirst()
@@ -19,22 +25,29 @@ fun main() {
             for (i in stack.size - 1 downTo 0) {
                 nextNumber += stack[i]
             }
-            nextNumber += chunks.last()
+            nextNumber += numbers.last()
             sum += nextNumber
         }
         return sum
     }
 
+    /***
+     * part2:
+     * find the previous number for each row
+     * (I used the same algorithm but inverted the input)
+     */
     fun part2(input: List<String>): Int {
         var sum = 0
         input.forEach { s: String ->
-            val chunks = mutableListOf<Int>()
+            val numbers = mutableListOf<Int>()
             val stringChunks = s.split(' ')
-            stringChunks.forEach { chunks.add(it.toInt()) }
-            chunks.reverse()
+            stringChunks.forEach { numbers.add(it.toInt()) }
+            numbers.reverse() // reverse the input to "use the same algorithm backwards"
             val stack = mutableListOf<Int>()
-            for (i in 0..chunks.size - 2) {
-                stack.add(chunks[i + 1] - chunks[i])
+
+            // store the diagonal numbers on the stack
+            for (i in 0..numbers.size - 2) {
+                stack.add(numbers[i + 1] - numbers[i])
                 repeat(i) {
                     stack.add(stack.last() - stack[0])
                     stack.removeFirst()
@@ -45,7 +58,7 @@ fun main() {
             for (i in stack.size - 1 downTo 0) {
                 nextNumber += stack[i]
             }
-            nextNumber += chunks.last()
+            nextNumber += numbers.last()
             sum += nextNumber
         }
         return sum
