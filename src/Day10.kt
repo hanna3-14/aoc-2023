@@ -56,7 +56,6 @@ fun main() {
             snake.add(position)
             symbols.add(input[position.first][position.second])
         }
-        println("snake = $snake")
 
         // ausmalen
         val totalInner = mutableListOf<Pair<Int, Int>>()
@@ -64,46 +63,44 @@ fun main() {
         var innerSnake = mutableListOf<Pair<Int, Int>>()
         var direction = "R"
 
-        /*snake.forEach { position: Pair<Int, Int> ->
-            if(direction == "R"){
-                while()
-            }
-        }*/
-
-        //snake.forEach { symbols.add(input[it.first][it.second]) }
-        var inner = "left"
-        println("symbols: $symbols")
-        //symbols.forEach { symbol: Char ->
+        var inner = "up"
         for (i in 0..symbols.size - 2) {
             position = snake[i]
             innerSnake.clear()
+            var symbol = symbols[i]
             var nextSymbol = symbols[i + 1]
             if (inner == "right") {
-                var index = 1
-                while (!snake.contains(
-                        Pair(
-                            position.first,
-                            position.second + index
-                        )
-                    )
-                ) {
-                    innerSnake.add(Pair(position.first, position.second + index))
-                    index += 1
+                var additionalInnerSnake = fillUpRight(snake, position, innerSnake)
+                additionalInnerSnake.forEach { totalInner.add(it) }
+                additionalInnerSnake.clear()
+                if(symbol == '7'){
+                    additionalInnerSnake = fillUpUp(snake, position, innerSnake)
+                    additionalInnerSnake.forEach { totalInner.add(it) }
+                    additionalInnerSnake.clear()
                 }
                 if (nextSymbol == '|') {
                     inner = "right"
                 }
+                if (nextSymbol == 'L') {
+                    inner = "up"
+                }
+                if (nextSymbol == 'J') {
+                    inner = "down"
+                }
+                if (nextSymbol == '7') {
+                    inner = "up"
+                }
+                if (nextSymbol == 'F') {
+                    inner = "down"
+                }
             } else if (inner == "left") {
-                var index = 1
-                while (!snake.contains(
-                        Pair(
-                            position.first,
-                            position.second - index
-                        )
-                    )
-                ) {
-                    innerSnake.add(Pair(position.first, position.second - index))
-                    index += 1
+                var additionalInnerSnake = fillUpLeft(snake, position, innerSnake)
+                additionalInnerSnake.forEach { totalInner.add(it) }
+                additionalInnerSnake.clear()
+                if(symbol == 'F') {
+                    additionalInnerSnake = fillUpUp(snake, position, innerSnake)
+                    additionalInnerSnake.forEach { totalInner.add(it) }
+                    additionalInnerSnake.clear()
                 }
                 if (nextSymbol == 'J') {
                     inner = "up"
@@ -114,18 +111,20 @@ fun main() {
                 if (nextSymbol == '|') {
                     inner = "left"
                 }
-            }
-            if (inner == "up") {
-                var index = 1
-                while (!snake.contains(
-                        Pair(
-                            position.first - index,
-                            position.second
-                        )
-                    )
-                ) {
-                    innerSnake.add(Pair(position.first - index, position.second))
-                    index += 1
+                if (nextSymbol == '7') {
+                    inner = "down"
+                }
+                if (nextSymbol == 'F') {
+                    inner = "up"
+                }
+            } else if (inner == "up") {
+                var additionalInnerSnake = fillUpUp(snake, position, innerSnake)
+                additionalInnerSnake.forEach { totalInner.add(it) }
+                additionalInnerSnake.clear()
+                if (symbol == 'F'){
+                    additionalInnerSnake = fillUpLeft(snake, position, innerSnake)
+                    additionalInnerSnake.forEach { totalInner.add(it) }
+                    additionalInnerSnake.clear()
                 }
                 if (nextSymbol == 'F') {
                     inner = "left" // and "up"
@@ -133,26 +132,35 @@ fun main() {
                 if (nextSymbol == 'L') {
                     inner = "right"
                 }
+                if (nextSymbol == 'J') {
+                    inner = "left"
+                }
+                if (nextSymbol == '7') {
+                    inner = "right"
+                }
             } else if (inner == "down") {
-                var index = 1
-                while (!snake.contains(
-                        Pair(
-                            position.first + index,
-                            position.second
-                        )
-                    )
-                ) {
-                    innerSnake.add(Pair(position.first + index, position.second))
-                    index += 1
+                var additionalInnerSnake = fillUpDown(snake, position, innerSnake)
+                additionalInnerSnake.forEach { totalInner.add(it) }
+                additionalInnerSnake.clear()
+                if(symbol == 'L'){
+                    additionalInnerSnake = fillUpLeft(snake, position, innerSnake)
+                    additionalInnerSnake.forEach { totalInner.add(it) }
+                    additionalInnerSnake.clear()
                 }
                 if (nextSymbol == '7') {
                     inner = "left"
                 }
+                if (nextSymbol == 'L') {
+                    inner = "left"
+                }
+                if (nextSymbol == 'F') {
+                    inner = "right"
+                }
+                if (nextSymbol == 'J') {
+                    inner = "right"
+                }
             }
-            innerSnake.forEach { totalInner.add(it) }
         }
-        println(totalInner.distinct())
-        println(totalInner.distinct().size)
         return totalInner.distinct().size
     }
 
@@ -166,16 +174,16 @@ fun main() {
     val testInput4 = readInput("Day10_4_test")
     val testInput5 = readInput("Day10_5_test")
     // check(part2(testInput3) == 4) // inner == "right"
-    check(part2(testInput4) == 8) // inner == "left"
+    check(part2(testInput4) == 8) // inner == "up"
     // check(part2(testInput5) == 10)
 
     val input = readInput("Day10")
-    // part1(input).println()
-    // part2(input).println()
+    part1(input).println()
+    part2(input).println() // 472 +- ein paar Lücken // inner == "up" 495
 
     // check after submitting the solution
-    // check(part1(input) == 6786)
-    // check(part2(input) == 34278221)
+    check(part1(input) == 6786)
+    check(part2(input) == 495)
 }
 
 fun getStartPosition1(input: List<String>, startPosition: Pair<Int, Int>): Pair<Int, Int> {
@@ -271,4 +279,64 @@ fun getNextPosition(
         }
     }
     return Pair(0, 0)
+}
+
+fun fillUpRight(snake: MutableList<Pair<Int, Int>>, position: Pair<Int, Int>, innerSnake: MutableList<Pair<Int, Int>>): MutableList<Pair<Int, Int>> {
+    var index = 1
+    while (!snake.contains(
+            Pair(
+                position.first,
+                position.second + index
+            )
+        )
+    ) {
+        innerSnake.add(Pair(position.first, position.second + index))
+        index += 1
+    }
+    return innerSnake
+}
+
+fun fillUpLeft(snake: MutableList<Pair<Int, Int>>, position: Pair<Int, Int>, innerSnake: MutableList<Pair<Int, Int>>): MutableList<Pair<Int, Int>> {
+    var index = 1
+    while (!snake.contains(
+            Pair(
+                position.first,
+                position.second - index
+            )
+        )
+    ) {
+        innerSnake.add(Pair(position.first, position.second - index))
+        index += 1
+    }
+    return innerSnake
+}
+
+fun fillUpUp(snake: MutableList<Pair<Int, Int>>, position: Pair<Int, Int>, innerSnake: MutableList<Pair<Int, Int>>): MutableList<Pair<Int, Int>> {
+    var index = 1
+    while (!snake.contains(
+            Pair(
+                position.first - index,
+                position.second
+            )
+        )
+    ) {
+        innerSnake.add(Pair(position.first - index, position.second))
+        index += 1
+    }
+    return innerSnake
+}
+
+fun fillUpDown(snake: MutableList<Pair<Int, Int>>, position: Pair<Int, Int>, innerSnake: MutableList<Pair<Int, Int>>): MutableList<Pair<Int, Int>> {
+    var index = 1
+    while (!snake.contains(
+            Pair(
+                position.first + index,
+                position.second
+            )
+        )
+    ) {
+        innerSnake.add(Pair(position.first + index, position.second))
+        index += 1
+    }
+    return innerSnake
 }
