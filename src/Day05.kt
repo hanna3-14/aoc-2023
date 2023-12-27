@@ -1,63 +1,71 @@
 fun main() {
 
+    /***
+     * part1:
+     * find the lowest location number of any seed
+     */
     fun part1(input: List<String>): Long {
         var seeds = input[0].split(' ')
         seeds = seeds.subList(1, seeds.size)
-        val seedsInt = mutableListOf<Long>()
+        val seedsLong = mutableListOf<Long>()
         seeds.forEach { seed: String ->
-            seedsInt.add(seed.toLong())
+            seedsLong.add(seed.toLong())
         }
-        // var maps = input.subList(2, input.size).filter { it.isNotBlank() }
-        var indexes = mutableListOf<Int>()
+
+        val mapSeparators = mutableListOf<Int>()
         input.forEachIndexed { index: Int, s: String ->
             if (s.contains("map")) {
-                indexes += index + 1
+                mapSeparators.add(index + 1)
             }
         }
-        val seedToSoil = input.subList(indexes[0], indexes[1] - 2)
-        val soilToFertilizer = input.subList(indexes[1], indexes[2] - 2)
-        val fertilizerToWater = input.subList(indexes[2], indexes[3] - 2)
-        val waterToLight = input.subList(indexes[3], indexes[4] - 2)
-        val lightToTemperature = input.subList(indexes[4], indexes[5] - 2)
-        val temperatureToHumidity = input.subList(indexes[5], indexes[6] - 2)
-        val humidityToLocation = input.subList(indexes[6], input.size)
+        val seedToSoil = input.subList(mapSeparators.first(), mapSeparators[1] - 2)
+        val soilToFertilizer = input.subList(mapSeparators[1], mapSeparators[2] - 2)
+        val fertilizerToWater = input.subList(mapSeparators[2], mapSeparators[3] - 2)
+        val waterToLight = input.subList(mapSeparators[3], mapSeparators[4] - 2)
+        val lightToTemperature = input.subList(mapSeparators[4], mapSeparators[5] - 2)
+        val temperatureToHumidity = input.subList(mapSeparators[5], mapSeparators.last() - 2)
+        val humidityToLocation = input.subList(mapSeparators.last(), input.size)
 
         val soils = mutableListOf<Long>()
-        seedsInt.forEach { seed: Long ->
-            soils.add(doImportantStuff(seedToSoil, seed))
+        seedsLong.forEach { seed: Long ->
+            soils.add(seedTransformation(seedToSoil, seed))
         }
         val fertilizers = mutableListOf<Long>()
         soils.forEach { soil: Long ->
-            fertilizers.add(doImportantStuff(soilToFertilizer, soil))
+            fertilizers.add(seedTransformation(soilToFertilizer, soil))
         }
         val waters = mutableListOf<Long>()
         fertilizers.forEach { fertilizer: Long ->
-            waters.add(doImportantStuff(fertilizerToWater, fertilizer))
+            waters.add(seedTransformation(fertilizerToWater, fertilizer))
         }
         val lights = mutableListOf<Long>()
         waters.forEach { water: Long ->
-            lights.add(doImportantStuff(waterToLight, water))
+            lights.add(seedTransformation(waterToLight, water))
         }
         val temperatures = mutableListOf<Long>()
         lights.forEach { light: Long ->
-            temperatures.add(doImportantStuff(lightToTemperature, light))
+            temperatures.add(seedTransformation(lightToTemperature, light))
         }
         val humidities = mutableListOf<Long>()
         temperatures.forEach { temperature: Long ->
-            humidities.add(doImportantStuff(temperatureToHumidity, temperature))
+            humidities.add(seedTransformation(temperatureToHumidity, temperature))
         }
         val locations = mutableListOf<Long>()
         humidities.forEach { humidity: Long ->
-            locations.add(doImportantStuff(humidityToLocation, humidity))
+            locations.add(seedTransformation(humidityToLocation, humidity))
         }
         return locations.min()
     }
 
+    /***
+     * part2:
+     * interpret the seed as ranges
+     */
     fun part2(input: List<String>): Long {
         var seedInput = input.first().split(' ')
         seedInput = seedInput.subList(1, seedInput.size)
         val seedChunks = seedInput.chunked(2)
-        val seedRanges = mutableListOf<MutableList<Long>>()
+        var seedRanges = mutableListOf<MutableList<Long>>()
         seedChunks.forEach {
             seedRanges.add(
                 mutableListOf(
@@ -68,31 +76,23 @@ fun main() {
         }
 
         // get the indices that separate the transformation maps in the input file
-        val indices = mutableListOf<Int>()
+        val mapSeparators = mutableListOf<Int>()
         input.forEachIndexed { index: Int, s: String ->
             if (s.contains("map")) {
-                indices += index + 1
+                mapSeparators += index + 1
             }
         }
-        // get the transformation list from the input file
-        val seedToSoil = input.subList(indices[0], indices[1] - 2)
-        val soilToFertilizer = input.subList(indices[1], indices[2] - 2)
-        val fertilizerToWater = input.subList(indices[2], indices[3] - 2)
-        val waterToLight = input.subList(indices[3], indices[4] - 2)
-        val lightToTemperature = input.subList(indices[4], indices[5] - 2)
-        val temperatureToHumidity = input.subList(indices[5], indices[6] - 2)
-        val humidityToLocation = input.subList(indices[6], input.size)
+        mapSeparators.add(input.size + 2)
 
-        val soilsRange = efficientTransformation(seedToSoil, seedRanges)
-        val fertilizersRange = efficientTransformation(soilToFertilizer, soilsRange)
-        val waterRange = efficientTransformation(fertilizerToWater, fertilizersRange)
-        val lightRange = efficientTransformation(waterToLight, waterRange)
-        val temperatureRange = efficientTransformation(lightToTemperature, lightRange)
-        val humidityRange = efficientTransformation(temperatureToHumidity, temperatureRange)
-        val locationRange = efficientTransformation(humidityToLocation, humidityRange)
+        var mutatedRanges = mutableListOf<MutableList<Long>>()
+        for (i in 0..mapSeparators.size - 2) {
+            val transformationList = input.subList(mapSeparators[i], mapSeparators[i + 1] - 2)
+            mutatedRanges = efficientTransformation(transformationList, seedRanges)
+            seedRanges = mutatedRanges
+        }
 
         var min = 5000000000000
-        locationRange.forEach { location: MutableList<Long> ->
+        mutatedRanges.forEach { location: MutableList<Long> ->
             if (location.first() < min) {
                 min = location.first()
             }
@@ -115,12 +115,15 @@ fun main() {
 
 }
 
-fun doImportantStuff(transformationList: List<String>, seed: Long): Long {
+fun seedTransformation(transformationList: List<String>, seed: Long): Long {
     var mutableSeed = seed
     for (i in transformationList.indices) {
         val chunks = transformationList[i].split(' ')
-        if ((chunks[1].toLong() <= mutableSeed) && (chunks[1].toLong() + chunks[2].toLong() >= mutableSeed)) {
-            mutableSeed += chunks[0].toLong() - chunks[1].toLong()
+        val destination = chunks.first().toLong()
+        val source = chunks[1].toLong()
+        val length = chunks.last().toLong()
+        if ((source <= mutableSeed) && (source + length >= mutableSeed)) {
+            mutableSeed += destination - source
             break
         }
     }
@@ -135,18 +138,21 @@ fun efficientTransformation(
     while (ranges.isNotEmpty()) {
         val range = ranges.first()
         var isTransformationNecessary = false
-        for (j in transformationList.indices) {
-            val chunks = transformationList[j].split(' ')
+        transformationList.forEach { transformation: String ->
+            val chunks = transformation.split(' ')
+            val destination = chunks.first().toLong()
+            val source = chunks[1].toLong()
+            val length = chunks.last().toLong()
             // transformation is necessary if range minimum or range maximum is contained in any transformation
-            if (((chunks[1].toLong() <= range.first()) && (range.first() < chunks[1].toLong() + chunks[2].toLong()))
-                || ((chunks[1].toLong() <= range.last()) && (range.last() < chunks[1].toLong() + chunks[2].toLong()))
+            if (((source <= range.first()) && (range.first() < source + length))
+                || ((source <= range.last()) && (range.last() < source + length))
             ) {
                 isTransformationNecessary = true
                 // if the minimum and maximum are within the same transformation
-                if (((chunks[1].toLong() <= range.first()) && (range.first() < chunks[1].toLong() + chunks[2].toLong()))
-                    && ((chunks[1].toLong() <= range.last()) && (range.last() < chunks[1].toLong() + chunks[2].toLong()))
+                if (((source <= range.first()) && (range.first() < source + length))
+                    && ((source <= range.last()) && (range.last() < source + length))
                 ) {
-                    val offset = chunks[0].toLong() - chunks[1].toLong()
+                    val offset = destination - source
                     transformedRanges.add(
                         mutableListOf(
                             range.first() + offset,
@@ -154,9 +160,9 @@ fun efficientTransformation(
                         )
                     )
                 } // if only the minimum is within the range
-                else if ((chunks[1].toLong() <= range.first()) && (range.first() < chunks[1].toLong() + chunks[2].toLong())) {
-                    val offset = chunks[0].toLong() - chunks[1].toLong()
-                    val maximum = chunks[1].toLong() + chunks[2].toLong()
+                else if ((source <= range.first()) && (range.first() < source + length)) {
+                    val offset = destination - source
+                    val maximum = source + length
                     transformedRanges.add(
                         mutableListOf(
                             range.first() + offset,
@@ -165,11 +171,10 @@ fun efficientTransformation(
                     )
                     ranges.add(mutableListOf(maximum, range.last()))
                 } // only the maximum is within the range
-                else if ((chunks[1].toLong() <= range.last()) && (range.last() < chunks[1].toLong() + chunks[2].toLong())) {
-                    val offset = chunks[0].toLong() - chunks[1].toLong()
-                    val minumum = chunks[1].toLong()
-                    transformedRanges.add(mutableListOf(minumum + offset, range.last() + offset))
-                    ranges.add(mutableListOf(range.first(), minumum - 1))
+                else if ((source <= range.last()) && (range.last() < source + length)) {
+                    val offset = destination - source
+                    transformedRanges.add(mutableListOf(source + offset, range.last() + offset))
+                    ranges.add(mutableListOf(range.first(), source - 1))
                 }
             }
         }
